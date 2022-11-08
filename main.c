@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <linux/iio/events.h>
 #include <linux/iio/types.h>
@@ -33,14 +34,16 @@ static int execute_callback(const char* prog, int value)
 
 	snprintf(value_string, sizeof(value_string), "%d", value);
 
-	if (0 == (my_pid = fork())) {
-		if (-1 == execlp(prog, prog, value_string, 0)) {
-			perror("child process execve failed");
-			return -1;
-		}
+	my_pid = fork();
+	if (my_pid > 0)
+		return 0;
+	if (my_pid < 0) {
+		perror("fork failed");
+		return -1;
 	}
-
-	return 0;
+	execlp(prog, prog, value_string, 0);
+	perror("child process execve failed");
+	exit(1);
 }
 
 int main(int argc, char **argv)
