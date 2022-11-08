@@ -41,7 +41,7 @@ static int execute_callback(const char* prog, int value)
 		perror("fork failed");
 		return -1;
 	}
-	execlp(prog, prog, value_string, 0);
+	execlp(prog, prog, value_string, (char*) NULL);
 	perror("child process execve failed");
 	exit(1);
 }
