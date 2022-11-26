@@ -1,0 +1,76 @@
+.Dd $Mdocdate$
+.Dt PYRA_VOL_MON 1
+.Os
+.
+.Sh NAME
+.Nm pyra_vol_mon
+.Nd run a command every time an ADC reading changes.
+.
+.Sh SYNOPSIS
+.Nm
+.Op Fl c Ar channel
+.Op Fl l Ar lower
+.Op Fl u Ar upper
+.Op Fl s Ar step
+.Ar command
+.
+.Sh DESCRIPTION
+.Nm
+monitors a Linux IIO ADC channel
+and runs the provided command every time its value changes.
+It is primarily intended for reading the volume wheel position
+via the TI Palmas PMIC on DragonBox Pyra handheld computers.
+.
+.Pp
+.Ar command
+is looked up in
+.Ev $PATH
+as with
+.Xr execlp 3
+and executed with the arguments, in order,
+.Ar ADC_value
+.Ar lower
+.Ar upper Ns ,
+where
+.Ar ADC_value
+is the raw ADC reading.
+.
+.Pp
+Values outside the range given by
+.Ar lower
+and
+.Ar upper
+or changes smaller than
+.Ar step
+won't be reported.
+.
+.
+.Ss OPTIONS
+.Bl -tag -width Ds
+.It Fl c Ns , Fl -channel Ar channel
+set ADC channel number to monitor.
+.
+.It Fl h Ns , Fl -help
+display usage info and quit.
+.
+.It Fl l Ns , Fl -min Ar lower
+set lower limit of the value range.
+.
+.It Fl u Ns , Fl -max Ar upper
+set upper limit of the value range.
+.
+.It Fl s Ns , Fl -step Ar step
+set threshold of change in the monitored value to ignore.
+.
+.It Fl v Ns , Fl -verbose
+print
+.Ar channel , Ar min , Ar max , Ar step ,
+and
+.Ar command
+on standard output.
+.El
+.
+.
+.Sh AUTHORS
+Written by
+Patrik Dahlstr\(:om.
